@@ -17,18 +17,6 @@ import { useRef } from 'react';
 import Divider from '@mui/material/Divider/Divider';
 import { useTheme } from '@mui/material/styles';
 
-const PannelStyle = {
-  position: 'absolute',
-  minHeight: 250,
-  maxHeight: 400,
-  minWidth: 320,
-  overflow: scroll,
-  left: 0,
-  top: 0,
-  zIndex: 2,
-  p: 1,
-};
-
 export default function GroupSelect({ dataProps, data }) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
@@ -53,41 +41,59 @@ export default function GroupSelect({ dataProps, data }) {
   const pannelContent = () => {
     console.log('da1', data);
     return (
-      <Paper sx={PannelStyle}>
+      <Paper
+        sx={{
+          position: 'absolute',
+          minHeight: 250,
+          maxHeight: 400,
+          minWidth: 320,
+          overflow: 'auto',
+          left: 0,
+          top: 0,
+          zIndex: 2,
+          p: 1,
+        }}
+      >
         {(data || []).map((unit) => {
           return (
-            <Box>
-              <Box
-                sx={{
-                  display: 'flex',
-                }}
-                key={unit[defaultDataProps.id]}
-              >
-                <Box>
-                  <Box
+            <Box
+              sx={{
+                display: 'flex',
+                borderBottom: `1px solid ${theme.palette.grey[200]}`,
+                ':last-child': {
+                  borderBottom: 'none',
+                },
+              }}
+              key={unit[defaultDataProps.id]}
+            >
+              <Box>
+                <Box
+                  sx={{
+                    fontSize: '14px',
+                    fontWeight: 'bold',
+                    borderLeft: `2px solid ${theme.palette.primary.main}`,
+                    color: theme.palette.text.primary,
+                    boxShadow: 'none',
+                    my: '10px',
+                    pl: '10px',
+                    width: '60px',
+                  }}
+                >
+                  {unit[defaultDataProps.label]}
+                </Box>
+              </Box>
+              <Stack direction="row" spacing={0.5} flexWrap={'wrap'}>
+                {unit[defaultDataProps.children].map((u) => (
+                  <Button
                     sx={{
-                      fontSize: '14px',
-                      fontWeight: 'bold',
-                      borderLeft: `2px solid ${theme.palette.primary.main}`,
-                      color: theme.palette.text.primary,
-                      boxShadow: 'none',
-                      my: '10px',
-                      pl: '10px',
-                      width: '60px',
+                      fontWeight: '400',
+                      color: theme.palette.text.secondary,
                     }}
                   >
-                    {unit[defaultDataProps.label]}
-                  </Box>
-                </Box>
-                <Stack direction="row" spacing={0.5} flexWrap={'wrap'}>
-                  {unit[defaultDataProps.children].map((u) => (
-                    <Button sx={{ color: theme.palette.text.secondary }}>
-                      {u[defaultDataProps.label]}
-                    </Button>
-                  ))}
-                </Stack>
-              </Box>
-              <Divider />
+                    {u[defaultDataProps.label]}
+                  </Button>
+                ))}
+              </Stack>
             </Box>
           );
         })}
@@ -106,9 +112,7 @@ export default function GroupSelect({ dataProps, data }) {
             variant="outlined"
           />
         </Box>
-        <Box sx={{ position: 'relative' }}>
-          <Box sx={PannelStyle}>{open ? pannelContent() : null}</Box>
-        </Box>
+        <Box sx={{ position: 'relative' }}>{open ? pannelContent() : null}</Box>
       </FormControl>
     </ClickAwayListener>
   );
